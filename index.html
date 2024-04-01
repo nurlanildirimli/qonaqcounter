@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang ="az" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Qonaqlar</title>
+    </head>
+    <body>
+        <label>Ad: </label>
+        <input type="text" id="ad">
+        <label>  Soyad: </label>
+        <input type="text" id="soyad">
+        <button id="search">Axtar</button>
+        <!--<div id="containter">
+            <p>Ad: <input type="text" name="ad" required/>  Soyad: <input type="text" name ="soyad" required/>  <button id="search">Axtar</button></p>
+        </div>-->
+        <script type="module">
+            // Import the functions you need from the SDKs you need
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+            // TODO: Add SDKs for Firebase products that you want to use
+            // https://firebase.google.com/docs/web/setup#available-libraries
+          
+            // Your web app's Firebase configuration
+            const firebaseConfig = {
+              apiKey: "AIzaSyAl2yKHf8AJfrIWBPOZN--nD-5OVDI1d3Y",
+              authDomain: "qonaqcounter.firebaseapp.com",
+              databaseURL: "https://qonaqcounter-default-rtdb.europe-west1.firebasedatabase.app",
+              projectId: "qonaqcounter",
+              storageBucket: "qonaqcounter.appspot.com",
+              messagingSenderId: "315316443980",
+              appId: "1:315316443980:web:79405825aa75472585cde9"
+            };
+          
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+
+            import {getDatabase, ref, child, get, set, update, remove} from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
+            const db = getDatabase();
+
+            let ad_text = document.getElementById('ad');
+            let soyad_text = document.getElementById('soyad');
+            
+            let SrchBtn = document.getElementById("search");
+
+            function GetData()
+            {
+                alert(ad_text.value);
+                const dbRef = ref(db);
+                get(child(dbRef,ad.value+" "+soyad.value)).then((snapshot)=>{
+                    if(snapshot.exists()){
+                        alert(snapshot.val().ad+" "+snapshot.val().soyad+" "+snapshot.val().gelib+" "+snapshot.val().otur)
+                    }
+                    else{
+                        alert("Yoxdur");
+                    }
+
+                })
+                .catch((error)=>{
+                    alert("Ugursuz");
+                    console.log(error);
+                })
+            }
+            SrchBtn.addEventListener('click', GetData);
+          </script>
+    </body>
+</html>
+
+
+<!--<script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js"></script>
+<script src="./index.js"></script>-->
+</html>
