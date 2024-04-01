@@ -10,6 +10,8 @@
         <label>  Soyad: </label>
         <input type="text" id="soyad">
         <button id="search">Axtar</button>
+        <br><br>
+        <label id="bos"></label>
         <!--<div id="containter">
             <p>Ad: <input type="text" name="ad" required/>  Soyad: <input type="text" name ="soyad" required/>  <button id="search">Axtar</button></p>
         </div>-->
@@ -38,6 +40,7 @@
 
             let ad_text = document.getElementById('ad');
             let soyad_text = document.getElementById('soyad');
+            let bos_text = document.getElementById('bos');
             
             let SrchBtn = document.getElementById("search");
 
@@ -46,7 +49,11 @@
                 const dbRef = ref(db);
                 get(child(dbRef,ad.value+" "+soyad.value)).then((snapshot)=>{
                     if(snapshot.exists()){
-                        alert(snapshot.val().ad+" "+snapshot.val().soyad+" "+snapshot.val().gelib+" "+snapshot.val().otur)
+                        var gel;
+                        if(snapshot.val().gelib == true){gel = "Gəlib";}
+                        else{gel= "Gəlməyib";}
+                        bos_text.innerHTML = snapshot.val().ad+" "+snapshot.val().soyad+" "+gel+" "+snapshot.val().otur;
+                        //alert(snapshot.val().ad+" "+snapshot.val().soyad+" "+snapshot.val().gelib+" "+snapshot.val().otur)
                     }
                     else{
                         alert("Yoxdur");
