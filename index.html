@@ -4,6 +4,23 @@
         <meta charset="utf-8">
         <title>Qonaqlar</title>
         <style>
+            input[type=text] {
+                width: 20%;
+                padding: 6px 6px;
+                margin: 8px 0;
+                box-sizing: border-box;
+            }
+            button{
+                padding: 6px 6px;
+                margin: 8px 0;
+                box-sizing: border-box;
+            }
+            input[type=checkbox]{
+                top: 0;
+                left: 0;
+                height: 30px;
+                width: 30px;
+            }
             table {
                 width: 100%;
                 border-collapse: collapse;
@@ -110,7 +127,15 @@
                 td1.innerHTML = ad;
                 td2.innerHTML = soyad;
                 td3.innerHTML = masa;
-                td4.innerHTML = gelib;
+                if(gelib)
+                {
+                    td4.innerHTML = '<input type="checkbox" checked>';
+                }
+                else
+                {
+                    td4.innerHTML = '<input type="checkbox">';
+                }
+                
                 td5.innerHTML = '<button onclick="editRow(this)">Düzəlt</button>';
 
                 trow.appendChild(td1);
