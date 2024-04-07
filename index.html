@@ -3,6 +3,21 @@
     <head>
         <meta charset="utf-8">
         <title>Qonaqlar</title>
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     </head>
     <body>
         <label>Ad: </label>
@@ -12,6 +27,21 @@
         <button id="search">Axtar</button>
         <br><br>
         <label id="bos"></label>
+        <table id="myTable">
+
+            <thead>
+                <tr>
+                    <th>Ad</th>
+                    <th>Soyad</th>
+                    <th>Masa</th>
+                    <th>Gelib</th>
+                    <th>Duzelt</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Existing rows will be added here -->
+            </tbody>
+            </table>
         <!--<div id="containter">
             <p>Ad: <input type="text" name="ad" required/>  Soyad: <input type="text" name ="soyad" required/>  <button id="search">Axtar</button></p>
         </div>-->
@@ -35,25 +65,129 @@
             // Initialize Firebase
             const app = initializeApp(firebaseConfig);
 
-            import {getDatabase, ref, child, get, set, update, remove} from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
+            import {getDatabase, ref, child, get, set, update, remove, onValue} from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
             const db = getDatabase();
 
             let ad_text = document.getElementById('ad');
             let soyad_text = document.getElementById('soyad');
             let bos_text = document.getElementById('bos');
+
+            var tbody = document.getElementById("tableBody");
             
             let SrchBtn = document.getElementById("search");
 
+            function searchTable() {
+                var input, filter, table, tbody, tr, td, i, txtValue;
+                input = document.getElementById('ad');
+                filter = input.value.toUpperCase();
+                table = document.getElementById('myTable');
+                tbody = document.getElementById('tableBody');
+                tr = tbody.getElementsByTagName('tr');
+
+                for (i = 0; i < tr.length; i++) {
+                    td = tr[i].getElementsByTagName('td')[0]; // Assuming name is in the first column (index 0)
+                    if (td) {
+                        txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                    }
+            }
+            ad_text.onkeyup = searchTable;
+
+            function AddItemToTable(ad,soyad,masa,gelib)
+            {
+                let trow = document.createElement('tr');
+                let td1 = document.createElement('td');
+                let td2 = document.createElement('td');
+                let td3 = document.createElement('td');
+                let td4 = document.createElement('td');
+                let td5 = document.createElement('td');
+
+                td1.innerHTML = ad;
+                td2.innerHTML = soyad;
+                td3.innerHTML = masa;
+                td4.innerHTML = gelib;
+                td5.innerHTML = '<button onclick="editRow(this)">Düzəlt</button>';
+
+                trow.appendChild(td1);
+                trow.appendChild(td2);
+                trow.appendChild(td3);
+                trow.appendChild(td4);
+                trow.appendChild(td5);
+
+                tbody.appendChild(trow);
+            }
+
+            function AddAllItems(Qonaqs)
+            {
+                tbody.innerHTML="";
+                Qonaqs.forEach(element=>{
+                    AddItemToTable(element.ad,element.soyad,element.masa,element.gelib);
+                });
+            }
+
+            function GetAllDataRealtime()
+            {
+                const dbRef = ref(db,"qonaq/");
+                onValue(dbRef,(snapshot)=>{
+                    var qonaqs = [];
+
+                    snapshot.forEach(childSnapshot => {
+                        qonaqs.push(childSnapshot.val())
+                    });
+                    AddAllItems(qonaqs);
+                });
+            }
+
+            window.onload = GetAllDataRealtime;
+
+            
+
+
+
+
+
+
+
+
+
+
+/*
+            function btnClicked()
+            {
+                var table = document.getElementById("myTable");
+                table.innerHTML="";
+                /*var tbody = document.getElementById("tableBody");
+                tbody.innerHTML= "";*/
+                //GetData();
+            /*}
+
             function GetData()
             {
-                const dbRef = ref(db);
-                get(child(dbRef,ad.value)).then((snapshot)=>{
+                const dbRef = ref(db,"qonaq/");
+                get(child(dbRef,ad.value+""+soyad.value)).then((snapshot)=>{
                     if(snapshot.exists()){
                         var gel;
                         if(snapshot.val().gelib == true){gel = "Gəlib";}
                         else{gel= "Gəlməyib";}
-                        bos_text.innerHTML = snapshot.val().ad+" "+snapshot.val().soyad+" "+gel+" "+snapshot.val().otur+" masa";
+                        bos_text.innerHTML = snapshot.val().ad+" "+snapshot.val().soyad+" "+gel+" "+snapshot.val().masa;
                         //alert(snapshot.val().ad+" "+snapshot.val().soyad+" "+snapshot.val().gelib+" "+snapshot.val().otur)
+                        var table = document.getElementById("myTable");
+                        var row = table.insertRow(-1);
+                        var cell1 = row.insertCell(0);
+                        var cell2 = row.insertCell(1);
+                        var cell3 = row.insertCell(2);
+                        var cell4 = row.insertCell(3);
+                        var cell5 = row.insertCell(4);
+                        cell1.innerHTML = snapshot.val().ad;
+                        cell2.innerHTML = snapshot.val().soyad;
+                        cell3.innerHTML = snapshot.val().masa;
+                        cell4.innerHTML = gel;
+                        //cell5.innerHTML = '<button onclick="editRow(this)">Edit</button>';
                     }
                     else{
                         alert("Yoxdur");
@@ -64,8 +198,8 @@
                     alert("Ugursuz");
                     console.log(error);
                 })
-            }
-            SrchBtn.addEventListener('click', GetData);
+            }*/
+            //SrchBtn.addEventListener('click', btnClicked);
           </script>
     </body>
 </html>
