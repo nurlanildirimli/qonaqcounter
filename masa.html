@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang ="az" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Masalar</title>
+        <style>
+            input[type=text] {
+                height: 40px;
+                width: 80%;
+                padding: 6px 6px;
+                margin: 8px 0;
+                box-sizing: border-box;
+            }
+            button{
+                width: 100%;
+                padding: 10px 18px;
+                margin: 8px 0;
+                box-sizing: border-box;
+            }
+            input[type=checkbox]{
+                height: 30px;
+                width: 30px;
+            }
+            table {
+                display: block;
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px 8px;
+                text-align: left;
+                font-size: 20px;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    </head>
+    <body>
+        <a href="index.html">
+            <button>Qonaqlar</button>
+          </a>
+        <table id="myMasaTable">
+            <thead>
+                <tr>
+                    <th>Masa</th>
+                    <th>Gelib</th>
+                </tr>
+            </thead>
+            <tbody id="tableMasaBody">
+
+            </tbody>
+            </table>
+
+            <script type="module">
+
+                import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+    
+                const firebaseConfig = {
+                  apiKey: "AIzaSyAl2yKHf8AJfrIWBPOZN--nD-5OVDI1d3Y",
+                  authDomain: "qonaqcounter.firebaseapp.com",
+                  databaseURL: "https://qonaqcounter-default-rtdb.europe-west1.firebasedatabase.app",
+                  projectId: "qonaqcounter",
+                  storageBucket: "qonaqcounter.appspot.com",
+                  messagingSenderId: "315316443980",
+                  appId: "1:315316443980:web:79405825aa75472585cde9"
+                };
+    
+                const app = initializeApp(firebaseConfig);
+    
+                import {getDatabase, ref, child, get, set, update, remove, onValue} from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
+                const db = getDatabase();
+
+                var tbody1 = document.getElementById("tableMasaBody");
+
+            function AddMasaItemToTable(qonaq,id)
+            {
+                let trow = document.createElement('tr');
+                let td1 = document.createElement('td');
+                let td3 = document.createElement('td');
+
+                td1.innerHTML = id;
+                td3.innerHTML = qonaq;
+                
+                trow.appendChild(td1);
+                trow.appendChild(td3);
+
+                tbody1.appendChild(trow);
+            }
+
+            function AddAllMasaItems(Qonaqs)
+            {
+                var a = 0;
+                tbody1.innerHTML="";
+                Qonaqs.forEach(element=>{
+                    a++;
+                    AddMasaItemToTable(element.qonaq,a);
+                });
+            }
+
+            function GetAllMasaDataRealtime()
+            {
+                const dbRef = ref(db,"masa/");
+                onValue(dbRef,(snapshot)=>{
+                    var qonaqs = [];
+
+                    snapshot.forEach(childSnapshot => {
+                        qonaqs.push(childSnapshot.val())
+                    });
+                    AddAllMasaItems(qonaqs);
+                });
+            }
+            window.onload = GetAllMasaDataRealtime;
+        </script>
+    </body>
+</html>
