@@ -5,7 +5,8 @@
         <title>Qonaqlar</title>
         <style>
             input[type=text] {
-                width: 20%;
+                height: 40px;
+                width: 80%;
                 padding: 6px 6px;
                 margin: 8px 0;
                 box-sizing: border-box;
@@ -16,8 +17,6 @@
                 box-sizing: border-box;
             }
             input[type=checkbox]{
-                top: 0;
-                left: 0;
                 height: 30px;
                 width: 30px;
             }
@@ -27,8 +26,9 @@
             }
             th, td {
                 border: 1px solid #ddd;
-                padding: 8px;
+                padding: 8px 8px;
                 text-align: left;
+                font-size: 20px;
             }
             th {
                 background-color: #f2f2f2;
@@ -39,36 +39,28 @@
     <body>
         <label>Ad: </label>
         <input type="text" id="ad">
-        <label>  Soyad: </label>
-        <input type="text" id="soyad">
-        <button id="search">Axtar</button>
+        <button id="search">Axtar</button> <input type = "checkbox" id="goster" style = "position: absolute; top: 17px;">
         <br><br>
         <label id="bos"></label>
         <table id="myTable">
 
             <thead>
                 <tr>
-                    <th>Ad</th>
-                    <th>Soyad</th>
+                    <th style="width: 70%;" >Ad</th>
                     <th>Masa</th>
                     <th>Gelib</th>
                     <th>Duzelt</th>
                 </tr>
             </thead>
             <tbody id="tableBody">
-                <!-- Existing rows will be added here -->
+
             </tbody>
             </table>
-        <!--<div id="containter">
-            <p>Ad: <input type="text" name="ad" required/>  Soyad: <input type="text" name ="soyad" required/>  <button id="search">Axtar</button></p>
-        </div>-->
+
         <script type="module">
-            // Import the functions you need from the SDKs you need
+
             import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-            // TODO: Add SDKs for Firebase products that you want to use
-            // https://firebase.google.com/docs/web/setup#available-libraries
-          
-            // Your web app's Firebase configuration
+
             const firebaseConfig = {
               apiKey: "AIzaSyAl2yKHf8AJfrIWBPOZN--nD-5OVDI1d3Y",
               authDomain: "qonaqcounter.firebaseapp.com",
@@ -78,15 +70,13 @@
               messagingSenderId: "315316443980",
               appId: "1:315316443980:web:79405825aa75472585cde9"
             };
-          
-            // Initialize Firebase
+
             const app = initializeApp(firebaseConfig);
 
             import {getDatabase, ref, child, get, set, update, remove, onValue} from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
             const db = getDatabase();
 
             let ad_text = document.getElementById('ad');
-            let soyad_text = document.getElementById('soyad');
             let bos_text = document.getElementById('bos');
 
             var tbody = document.getElementById("tableBody");
@@ -102,7 +92,7 @@
                 tr = tbody.getElementsByTagName('tr');
 
                 for (i = 0; i < tr.length; i++) {
-                    td = tr[i].getElementsByTagName('td')[0]; // Assuming name is in the first column (index 0)
+                    td = tr[i].getElementsByTagName('td')[0];
                     if (td) {
                         txtValue = td.textContent || td.innerText;
                         if (txtValue.toUpperCase().indexOf(filter) > -1) {
@@ -115,43 +105,46 @@
             }
             ad_text.onkeyup = searchTable;
 
-            function AddItemToTable(ad,soyad,masa,gelib)
+            function AddItemToTable(ad,masa,gelib,id)
             {
                 let trow = document.createElement('tr');
                 let td1 = document.createElement('td');
-                let td2 = document.createElement('td');
                 let td3 = document.createElement('td');
                 let td4 = document.createElement('td');
                 let td5 = document.createElement('td');
+                //let td6 = document.createElement('td');
 
                 td1.innerHTML = ad;
-                td2.innerHTML = soyad;
                 td3.innerHTML = masa;
-                if(gelib)
-                {
-                    td4.innerHTML = '<input type="checkbox" checked>';
-                }
-                else
-                {
-                    td4.innerHTML = '<input type="checkbox">';
-                }
+                let checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = id;
+                checkbox.checked = gelib;
+
+                td4.appendChild(checkbox);
+                //td4.onclick = checkbox.click();
+                td4.onclick = myClick;
                 
                 td5.innerHTML = '<button onclick="editRow(this)">Düzəlt</button>';
+                //td6.innerHTML = id;
+                //td6.hidden = true;
 
                 trow.appendChild(td1);
-                trow.appendChild(td2);
                 trow.appendChild(td3);
                 trow.appendChild(td4);
                 trow.appendChild(td5);
+                //trow.appendChild(td6);
 
                 tbody.appendChild(trow);
             }
 
             function AddAllItems(Qonaqs)
             {
+                var a = 0;
                 tbody.innerHTML="";
                 Qonaqs.forEach(element=>{
-                    AddItemToTable(element.ad,element.soyad,element.masa,element.gelib);
+                    a++;
+                    AddItemToTable(element.ad,element.masa,element.gelib,a);
                 });
             }
 
@@ -170,8 +163,119 @@
 
             window.onload = GetAllDataRealtime;
 
-            
+            function myClick()
+            {
+                var parentRow = this.parentNode;
+                var ad = parentRow.childNodes[0].textContent;
+                var masa = parentRow.childNodes[1].textContent;
 
+                var checkbox = this.querySelector('input[type="checkbox"]');
+                var gel = checkbox.checked;
+                var id = checkbox.id;
+                var qonaq_say;
+
+                console.log("Ad:", ad);
+                console.log("Masa:", masa);
+
+                if(gel == true)
+                {
+                    update(ref(db,"qonaq/" + id),{
+                        gelib : true
+                    })
+                    .then(()=>{
+                        //alert("data updated");
+                    })
+                    .catch((error)=>{
+                        alert("Xəta Baş Verdi");
+                        console.log(error);
+                    })
+
+                    const dbRef = ref(db,"masa/");
+                    get(child(dbRef,masa)).then((snapshot)=>{
+                        if(snapshot.exists()){
+                            qonaq_say=snapshot.val().qonaq;
+                            update(ref(db,"masa/" + masa),{
+                                qonaq: qonaq_say+1
+                            }).then(()=>{}).catch((error)=>{alert("Xəta Baş Verdi"); console.log(error);})
+                        }
+                        else{
+                            alert("Yoxdur");
+                        }
+                    })
+                    .catch((error)=>{
+                        alert("Ugursuz");
+                        console.log(error);
+                    })
+                }
+                if(gel == false)
+                {
+                    update(ref(db,"qonaq/" + id),{
+                        gelib : false
+                    })
+                    .then(()=>{
+                        //alert("data updated");
+                    })
+                    .catch((error)=>{
+                        alert("Xəta Baş Verdi");
+                        console.log(error);
+                    })
+
+                    const dbRef = ref(db,"masa/");
+                    get(child(dbRef,masa)).then((snapshot)=>{
+                        if(snapshot.exists()){
+                            qonaq_say=snapshot.val().qonaq;
+                            update(ref(db,"masa/" + masa),{
+                                qonaq: qonaq_say-1
+                            }).then(()=>{}).catch((error)=>{alert("Xəta Baş Verdi"); console.log(error);})
+                        }
+                        else{
+                            alert("Yoxdur");
+                        }
+                    })
+                    .catch((error)=>{
+                        alert("Ugursuz");
+                        console.log(error);
+                    })
+                }
+            }
+        
+
+            function hideCheckedRows() {
+                var tbody = document.getElementById('tableBody');
+                var tr = tbody.getElementsByTagName('tr');
+
+                var hideChecked = document.getElementById('goster').checked;
+
+                for (var i = 0; i < tr.length; i++) {
+                    var checkbox = tr[i].getElementsByTagName('input')[0]; 
+
+                    if (hideChecked && checkbox.checked) {
+                        tr[i].style.display = "none";
+                    } else {
+                        tr[i].style.display = "";
+                    }
+                }
+            }
+            document.getElementById('goster').addEventListener('change', hideCheckedRows);
+
+            function getMasaInfo()
+            {
+                const dbRef = ref(db,"masa/");
+                get(child(dbRef,"2")).then((snapshot)=>{
+                    if(snapshot.exists()){
+                        bos_text.innerHTML = snapshot.val().qonaq;
+                    }
+                    else{
+                        alert("Yoxdur");
+                    }
+
+                })
+                .catch((error)=>{
+                    alert("Ugursuz");
+                    console.log(error);
+                })
+            }
+            //SrchBtn.addEventListener('click', getMasaInfo);
 
 
 
