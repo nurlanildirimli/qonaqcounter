@@ -343,60 +343,6 @@
                 }*/
             });
 
-            
-
-
-
-
-
-
-
-
-
-/*
-            function btnClicked()
-            {
-                var table = document.getElementById("myTable");
-                table.innerHTML="";
-                /*var tbody = document.getElementById("tableBody");
-                tbody.innerHTML= "";*/
-                //GetData();
-            /*}
-
-            function GetData()
-            {
-                const dbRef = ref(db,"qonaq/");
-                get(child(dbRef,ad.value+""+soyad.value)).then((snapshot)=>{
-                    if(snapshot.exists()){
-                        var gel;
-                        if(snapshot.val().gelib == true){gel = "Gəlib";}
-                        else{gel= "Gəlməyib";}
-                        bos_text.innerHTML = snapshot.val().ad+" "+snapshot.val().soyad+" "+gel+" "+snapshot.val().masa;
-                        //alert(snapshot.val().ad+" "+snapshot.val().soyad+" "+snapshot.val().gelib+" "+snapshot.val().otur)
-                        var table = document.getElementById("myTable");
-                        var row = table.insertRow(-1);
-                        var cell1 = row.insertCell(0);
-                        var cell2 = row.insertCell(1);
-                        var cell3 = row.insertCell(2);
-                        var cell4 = row.insertCell(3);
-                        var cell5 = row.insertCell(4);
-                        cell1.innerHTML = snapshot.val().ad;
-                        cell2.innerHTML = snapshot.val().soyad;
-                        cell3.innerHTML = snapshot.val().masa;
-                        cell4.innerHTML = gel;
-                        //cell5.innerHTML = '<button onclick="editRow(this)">Edit</button>';
-                    }
-                    else{
-                        alert("Yoxdur");
-                    }
-
-                })
-                .catch((error)=>{
-                    alert("Ugursuz");
-                    console.log(error);
-                })
-            }*/
-            //SrchBtn.addEventListener('click', btnClicked);
           </script>
     </body>
 </html>
