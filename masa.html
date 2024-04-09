@@ -92,11 +92,9 @@
 
             function AddAllMasaItems(Qonaqs)
             {
-                var a = 0;
                 tbody1.innerHTML="";
                 Qonaqs.forEach(element=>{
-                    a++;
-                    AddMasaItemToTable(element.qonaq,a);
+                    AddMasaItemToTable(element.qonaq,element.masa);
                 });
             }
 
