@@ -47,10 +47,10 @@
 
             <thead>
                 <tr>
-                    <th style="width: 50%;" >Ad</th>
+                    <th style="width: 75%;" >Ad</th>
                     <th>Masa</th>
                     <th>Gelib</th>
-                    <th>Duzelt</th>
+                    <!--<th>Duzelt</th>-->
                 </tr>
             </thead>
             <tbody id="tableBody">
@@ -124,7 +124,7 @@
                 let td1 = document.createElement('td');
                 let td3 = document.createElement('td');
                 let td4 = document.createElement('td');
-                let td5 = document.createElement('td');
+                //let td5 = document.createElement('td');
                 //let td6 = document.createElement('td');
 
                 td1.innerHTML = ad;
@@ -137,14 +137,14 @@
                 td4.appendChild(checkbox);
                 td4.onclick = myClick;
                 
-                td5.innerHTML = '<button onclick="editRow(this)">Düzəlt</button>';
+                //td5.innerHTML = '<button onclick="editRow(this)">Düzəlt</button>';
                 //td6.innerHTML = id;
                 //td6.hidden = true;
 
                 trow.appendChild(td1);
                 trow.appendChild(td3);
                 trow.appendChild(td4);
-                trow.appendChild(td5);
+                //trow.appendChild(td5);
                 //trow.appendChild(td6);
 
                 tbody.appendChild(trow);
