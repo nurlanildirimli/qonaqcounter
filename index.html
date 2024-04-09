@@ -12,7 +12,7 @@
                 box-sizing: border-box;
             }
             button{
-                padding: 6px 6px;
+                padding: 10px 18px;
                 margin: 8px 0;
                 box-sizing: border-box;
             }
@@ -39,7 +39,7 @@
     <body>
         <label>Ad: </label>
         <input type="text" id="ad">
-        <button id="search">Axtar</button> <input type = "checkbox" id="goster" style = "position: absolute; top: 17px;">
+        <a href="masa.html"><button id="search">Masalar</button></a> <input type = "checkbox" id="goster" style = "position: absolute; top: 17px;">
         <br><br>
         <label id="bos"></label>
         <table id="myTable">
@@ -56,6 +56,18 @@
 
             </tbody>
             </table>
+
+            <table id="myMasaTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Masa</th>
+                        <th>Gelib</th>
+                    </tr>
+                </thead>
+                <tbody id="tableMasaBody">
+    
+                </tbody>
+                </table>
 
         <script type="module">
 
@@ -81,7 +93,7 @@
 
             var tbody = document.getElementById("tableBody");
             
-            let SrchBtn = document.getElementById("search");
+            //let SrchBtn = document.getElementById("search");
 
             function searchTable() {
                 var input, filter, table, tbody, tr, td, i, txtValue;
@@ -122,7 +134,6 @@
                 checkbox.checked = gelib;
 
                 td4.appendChild(checkbox);
-                //td4.onclick = checkbox.click();
                 td4.onclick = myClick;
                 
                 td5.innerHTML = '<button onclick="editRow(this)">Düzəlt</button>';
@@ -173,30 +184,49 @@
                 var gel = checkbox.checked;
                 var id = checkbox.id;
                 var qonaq_say;
+                var qonaq_status;
 
-                console.log("Ad:", ad);
-                console.log("Masa:", masa);
+                //console.log("Ad:", ad);
+                //console.log("Masa:", masa);
 
                 if(gel == true)
                 {
-                    update(ref(db,"qonaq/" + id),{
-                        gelib : true
-                    })
-                    .then(()=>{
-                        //alert("data updated");
-                    })
-                    .catch((error)=>{
-                        alert("Xəta Baş Verdi");
-                        console.log(error);
-                    })
-
-                    const dbRef = ref(db,"masa/");
-                    get(child(dbRef,masa)).then((snapshot)=>{
+                    const dbRef1 = ref(db,"qonaq/");
+                    get(child(dbRef1,id)).then((snapshot)=>{
                         if(snapshot.exists()){
-                            qonaq_say=snapshot.val().qonaq;
-                            update(ref(db,"masa/" + masa),{
-                                qonaq: qonaq_say+1
-                            }).then(()=>{}).catch((error)=>{alert("Xəta Baş Verdi"); console.log(error);})
+                            qonaq_status=snapshot.val().gelib;
+
+                            update(ref(db,"qonaq/" + id),{
+                                gelib : true
+                            })
+                            .then(()=>{
+                                //alert("data updated");
+                            })
+                            .catch((error)=>{
+                                alert("Xəta Baş Verdi");
+                                console.log(error);
+                            })
+
+                            if(gel != qonaq_status)
+                            {
+                                const dbRef = ref(db,"masa/");
+                                get(child(dbRef,masa)).then((snapshot)=>{
+                                    if(snapshot.exists()){
+                                        qonaq_say=snapshot.val().qonaq;
+                                        update(ref(db,"masa/" + masa),{
+                                            qonaq: qonaq_say+1
+                                        }).then(()=>{}).catch((error)=>{alert("Xəta Baş Verdi"); console.log(error);})
+                                    }
+                                    else{
+                                        alert("Yoxdur");
+                                    }
+                                })
+                                .catch((error)=>{
+                                    alert("Ugursuz");
+                                    console.log(error);
+                                })
+                            }  
+
                         }
                         else{
                             alert("Yoxdur");
@@ -206,27 +236,47 @@
                         alert("Ugursuz");
                         console.log(error);
                     })
+                    
                 }
                 if(gel == false)
                 {
-                    update(ref(db,"qonaq/" + id),{
-                        gelib : false
-                    })
-                    .then(()=>{
-                        //alert("data updated");
-                    })
-                    .catch((error)=>{
-                        alert("Xəta Baş Verdi");
-                        console.log(error);
-                    })
-
-                    const dbRef = ref(db,"masa/");
-                    get(child(dbRef,masa)).then((snapshot)=>{
+                    const dbRef1 = ref(db,"qonaq/");
+                    get(child(dbRef1,id)).then((snapshot)=>{
                         if(snapshot.exists()){
-                            qonaq_say=snapshot.val().qonaq;
-                            update(ref(db,"masa/" + masa),{
-                                qonaq: qonaq_say-1
-                            }).then(()=>{}).catch((error)=>{alert("Xəta Baş Verdi"); console.log(error);})
+                            qonaq_status=snapshot.val().gelib;
+                            //console.log(qonaq_status);
+                            update(ref(db,"qonaq/" + id),{
+                                gelib : false
+                            })
+                            .then(()=>{
+                                //alert("data updated");
+                            })
+                            .catch((error)=>{
+                                alert("Xəta Baş Verdi");
+                                console.log(error);
+                            })
+
+                            if(gel != qonaq_status)
+                            {
+                                const dbRef = ref(db,"masa/");
+                                get(child(dbRef,masa)).then((snapshot)=>{
+                                    if(snapshot.exists()){
+                                        qonaq_say=snapshot.val().qonaq;
+                                        update(ref(db,"masa/" + masa),{
+                                            qonaq: qonaq_say-1
+                                        }).then(()=>{}).catch((error)=>{alert("Xəta Baş Verdi"); console.log(error);})
+                                    }
+                                    else{
+                                        alert("Yoxdur");
+                                    }
+                                })
+                                .catch((error)=>{
+                                    alert("Ugursuz");
+                                    console.log(error);
+                                })
+
+                                
+                            }       
                         }
                         else{
                             alert("Yoxdur");
@@ -236,6 +286,9 @@
                         alert("Ugursuz");
                         console.log(error);
                     })
+                    
+
+                    
                 }
             }
         
@@ -257,25 +310,39 @@
                 }
             }
             document.getElementById('goster').addEventListener('change', hideCheckedRows);
+            window.onclick = hideCheckedRows;
 
-            function getMasaInfo()
+            /*function getMasaInfo()
             {
-                const dbRef = ref(db,"masa/");
-                get(child(dbRef,"2")).then((snapshot)=>{
-                    if(snapshot.exists()){
-                        bos_text.innerHTML = snapshot.val().qonaq;
-                    }
-                    else{
-                        alert("Yoxdur");
-                    }
-
-                })
-                .catch((error)=>{
-                    alert("Ugursuz");
-                    console.log(error);
-                })
+                table = document.getElementById('myTable');
+                table.style.display = "none";
             }
-            //SrchBtn.addEventListener('click', getMasaInfo);
+            SrchBtn.addEventListener('click', getMasaInfo);*/
+
+            
+
+            let SrchBtn = document.getElementById("search");
+            let tableVisible = true;
+            let table1Visible = true;
+
+            SrchBtn.addEventListener('click', function() {
+                /*const table = document.getElementById('myTable');
+                const table1 = document.getElementById('myMasaTable');
+                if (tableVisible) {
+                    table.style.display = 'none';
+                    tableVisible = false;
+                    table1.style.display = 'table'; // or 'table', depending on your table layout
+                    GetAllMasaDataRealtime();
+                } else {
+                    table.style.display = 'table'; // or 'table', depending on your table layout
+                    tableVisible = true;
+                    table1.style.display = 'none';
+                    GetAllDataRealtime();
+                    window.onload = GetAllDataRealtime;
+                }*/
+            });
+
+            
 
 
 
